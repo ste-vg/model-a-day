@@ -1,103 +1,54 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as dat from 'dat.gui'
+import Stats from 'stats.js'
+import { Stage } from "./stage";
 
-/**
- * Base
- */
 // Debug
 const gui = new dat.GUI()
+const stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
 
-// Canvas
-const canvas = document.querySelector('canvas.webgl')
+/**
+ * Stage
+ */
 
-// Scene
-const scene = new THREE.Scene()
+const stage = new Stage(document.querySelector('canvas.webgl'))
 
 /**
  * Loaders
  */
+
+const loadingManager = new THREE.LoadingManager( 
+    // Loaded
+    () =>
+    {
+        console.log('loaded')
+    },
+
+    // Progress
+    () =>
+    {
+        console.log('progress')
+    })
 const textureLoader = new THREE.TextureLoader()
 const gltfLoader = new GLTFLoader()
 
 /**
- * Lights
+ * Tick
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
-directionalLight.castShadow = true
-directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.camera.far = 15
-directionalLight.shadow.normalBias = 0.05
-directionalLight.position.set(0.25, 2, - 2.25)
-scene.add(directionalLight)
 
-/**
- * Sizes
- */
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-}
-
-window.addEventListener('resize', () =>
-{
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
-
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
-
-/**
- * Camera
- */
-// Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(4, 1, - 4)
-scene.add(camera)
-
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
-
-/**
- * Renderer
- */
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true
-})
-
-renderer.physicallyCorrectLights = true
-renderer.outputEncoding = THREE.sRGBEncoding
-renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/**
- * Animate
- */
 const clock = new THREE.Clock()
 
 const tick = () =>
 {
+    stats.begin()
     const elapsedTime = clock.getElapsedTime()
 
-    // Update controls
-    controls.update()
-
-    // Render
-    renderer.render(scene, camera)
-
+    stage.render(elapsedTime)
     // Call tick again on the next frame
+    stats.end()
     window.requestAnimationFrame(tick)
 }
 
