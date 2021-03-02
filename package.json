@@ -1,0 +1,45 @@
+{
+  "name": "model-a-day",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --mode development  && npm run serve",
+    "clean": "rimraf _site",
+    "serve:webpack": "webpack --mode development --watch",
+    "serve:eleventy": "ELEVENTY_ENV=development eleventy --serve",
+    "serve": "npm-run-all clean --parallel serve:*",
+    "build:webpack": "webpack --mode production",
+    "build:eleventy": "ELEVENTY_ENV=production eleventy",
+    "build": "run-s clean build:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ste-vg/model-a-day.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ste-vg/model-a-day/issues"
+  },
+  "homepage": "https://github.com/ste-vg/model-a-day#readme",
+  "dependencies": {
+    "@11ty/eleventy": "^0.11.1",
+    "autoprefixer": "^10.2.4",
+    "clean-css": "^5.1.0",
+    "css-loader": "^5.1.1",
+    "dat.gui": "^0.7.7",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^11.0.1",
+    "terser": "^5.6.0",
+    "three": "^0.126.0",
+    "webpack": "^5.24.2"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.2",
+    "webpack-cli": "^4.5.0"
+  }
+}

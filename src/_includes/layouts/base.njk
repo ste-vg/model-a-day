@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {# <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.url }}/feed.xml" /> #}
+    {# <link rel="icon" href="{{ site.faviconPath }}" type="image/png" /> #}
+
+    <link rel="icon" type="image/svg+xml" href="/images/icon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="mask-icon" href="/images/icon-subtracted.svg" color="#000000">
+
+    {% include "partials/meta-info.njk" %}
+    <script>document.documentElement.classList.remove('no-js');</script>
+
+    {% set css %}
+        {% include "../../index.scss" %}
+    {% endset %}
+
+    <style>
+    {{ css | scss | cssmin | safe }}
+    </style>
+</head>
+<body id="top" class="{% if hasLoading %}loading{% endif %} ">
+
+    {{ content | safe }}
+
+    {% include "partials/footer.njk" %}    
+
+    {% include "partials/analytics.njk" %}
+
+    
+</body>
+</html>

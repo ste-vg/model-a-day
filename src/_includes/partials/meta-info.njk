@@ -1,0 +1,49 @@
+{% if title %}
+  {% set pageTitle = title + ' - ' + site.name %}
+{% else %}
+  {% set pageTitle = site.name %}
+{% endif %}
+{% set pageDesc = site.description %}
+{% set siteTitle = site.name %}
+{% set currentUrl = site.url + page.url %}
+
+{% if metaTitle %}
+  {% set pageTitle = metaTitle %}
+{% endif %}
+
+{% if metaDesc %}
+  {% set pageDesc = metaDesc %}
+{% endif %}
+
+<title>{{ pageTitle }}</title>
+<link rel="canonical" href="{{ currentUrl }}" />
+
+<meta property="og:site_name" content="{{ siteTitle }}" />
+<meta property="og:title" content="{{ pageTitle }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ currentUrl }}" />
+
+{% if site.authorHandle %}
+  <meta name="twitter:creator" content="@{{ site.authorHandle | replace('@', '') }}" />
+{% endif %}
+
+<meta name="description" content="{{ pageDesc }}" />
+<meta name="twitter:description" content="{{ pageDesc }}" />
+<meta property="og:description" content="{{ pageDesc }}" />
+<meta name=”twitter:card” content=”summary_large_image”>
+
+{% if socialImage %}  
+  <meta name="twitter:image" content="{{site.url}}{{ socialImage }}" />
+  <meta name="twitter:image:alt" content="Page image for {{ site.name }}" />
+  <meta property="og:image" content="{{site.url}}{{ socialImage }}" />
+  <meta property="og:image:alt" content="Page image for {{ site.name }}" />
+{% else %}  
+  <meta name="twitter:image" content="{{site.url}}/images/social.jpg" />
+  <meta name="twitter:image:alt" content="Page image for {{ site.name }}" />
+  <meta property="og:image" content="{{site.url}}/images/social.jpg" />
+  <meta property="og:image:alt" content="Page image for {{ site.name }}" />
+{% endif %}
+
+{% if site.paymentPointer %}
+  <meta name="monetization" content="{{ site.paymentPointer }}" />
+{% endif %}

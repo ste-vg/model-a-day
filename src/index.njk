@@ -1,0 +1,15 @@
+---
+layout: 'layouts/base.njk'
+title: 'Model a Day'
+---
+
+
+<canvas class="webgl"></canvas>
+
+{% set js %}
+    {% include "compiled/index.js" %}
+{% endset %}
+
+<script>
+{{ js | safe }}
+</script>
