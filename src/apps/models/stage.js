@@ -5,7 +5,7 @@ import { backgroundGradient } from "./backgroundGradient";
 
 class Stage
 {
-    constructor(domCanvasElement)
+    constructor(domCanvasElement, topColor, bottomColor)
     {
         this.canvas = domCanvasElement
         this.scene = new THREE.Scene()
@@ -19,14 +19,14 @@ class Stage
          * Background Gradient
          */
 
-        this.scene.add(backgroundGradient('green', 'black'))
+        this.scene.add(backgroundGradient(bottomColor, topColor))
 
         /**
          * Camera
          */
         
-        this.camera = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.camera.position.set(4, 1, - 4)
+        this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 0.1, 100)
+        this.camera.position.set(1, 4, -4)
         this.scene.add(this.camera)
 
         // Controls
@@ -69,10 +69,15 @@ class Stage
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
 
+    add(item)
+    {
+        this.scene.add(item)
+    }
+
     render(elapsedTime)
     {
-        this.controls.update();
-        this.renderer.render(this.scene, this.camera);
+        this.controls.update()
+        this.renderer.render(this.scene, this.camera)
     }
 }
 

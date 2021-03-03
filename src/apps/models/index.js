@@ -3,6 +3,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as dat from 'dat.gui'
 import Stats from 'stats.js'
 import { Stage } from "./stage";
+import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import { defineGrid, extendHex } from 'honeycomb-grid'
 
 // Debug
 const gui = new dat.GUI()
@@ -14,26 +16,91 @@ document.body.appendChild(stats.dom)
  * Stage
  */
 
-const stage = new Stage(document.querySelector('canvas.webgl'))
+const canvas = document.querySelector('canvas.webgl')
+const stage = new Stage(canvas, '#ffffff', '#bbbbbb')
+stage.controls.target = new THREE.Vector3(0, .5, 0)
 
 /**
  * Loaders
  */
 
-const loadingManager = new THREE.LoadingManager( 
-    // Loaded
-    () =>
-    {
-        console.log('loaded')
-    },
-
-    // Progress
-    () =>
-    {
-        console.log('progress')
-    })
 const textureLoader = new THREE.TextureLoader()
-const gltfLoader = new GLTFLoader()
+
+/**
+ * Materials
+ */
+
+const textureLight = textureLoader.load('/textures/matcap-light-512.png');
+const textureBase = textureLoader.load('/textures/matcap-base-512.png');
+const textureAccent = textureLoader.load('/textures/matcap-accent-512.png');
+const textureShiny = textureLoader.load('/textures/matcap-shiny-512.png');
+
+const materials = {
+    light: new THREE.MeshMatcapMaterial({ matcap: textureLight }),
+    base: new THREE.MeshMatcapMaterial({ matcap: textureBase }),
+    accent: new THREE.MeshMatcapMaterial({ matcap: textureAccent }),
+    shiny: new THREE.MeshMatcapMaterial({ matcap: textureShiny })
+}
+
+const mats = Object.keys(materials).map(key => materials[key]);
+
+/**
+ * Grid
+ */
+
+const geometries = []
+
+const sphereGeometry = new THREE.SphereBufferGeometry(.5, 20, 20);
+
+const count = 21;
+let radius = 0;
+let spaces = 1;
+
+while (spaces < count)
+{
+    radius++;
+    spaces += 6 * radius;
+}
+
+const grid = defineGrid().hexagon({radius})
+const gap = 1.1;
+
+for(let i = 0; i < count; i++)
+{
+    const geometry = new THREE.CylinderGeometry( 1, 1, .1, 6 )
+
+    const hex = grid.splice(Math.floor(grid.length / 2),1)[0]
+    const pos = hex.toPoint();
+
+    // geometry.rotateX((Math.random() - 0.5) * Math.PI * 0.05)
+    // geometry.rotateZ((Math.random() - 0.5) * Math.PI * 0.05)
+
+    geometry.translate(
+        pos.x * gap,
+        0,
+        pos.y * gap
+    )
+
+    geometries.push(geometry)
+
+    const sphere = new THREE.Mesh(sphereGeometry, mats[Math.floor(Math.random() * mats.length)])
+    sphere.position.x = pos.x * gap;
+    sphere.position.y = 0.7;
+    sphere.position.z = pos.y * gap;
+    stage.add(sphere)
+}
+
+const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
+
+const mesh = new THREE.Mesh(mergedGeometry, materials.light)
+stage.add(mesh)
+
+
+
+
+/**
+ * Tests
+ */
 
 /**
  * Tick
