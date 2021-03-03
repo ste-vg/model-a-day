@@ -49,10 +49,19 @@ const mats = Object.keys(materials).map(key => materials[key]);
  */
 
 const geometries = []
+const testItems = []
 
-const sphereGeometry = new THREE.SphereBufferGeometry(.5, 20, 20);
+const testItemRadius = 0.5
+const testGeometries = [
+    new THREE.DodecahedronGeometry(testItemRadius),
+    new THREE.OctahedronGeometry(testItemRadius),
+    new THREE.TorusKnotGeometry( .3, .1),
+    new THREE.BoxGeometry( testItemRadius, testItemRadius, testItemRadius ),
+    new THREE.ConeGeometry( testItemRadius * 0.8, testItemRadius * 1.5, 15 )
+]
 
-const count = 21;
+
+const count = 30;
 let radius = 0;
 let spaces = 1;
 
@@ -63,7 +72,7 @@ while (spaces < count)
 }
 
 const grid = defineGrid().hexagon({radius})
-const gap = 1.1;
+const gap = 1.3;
 
 for(let i = 0; i < count; i++)
 {
@@ -83,11 +92,19 @@ for(let i = 0; i < count; i++)
 
     geometries.push(geometry)
 
-    const sphere = new THREE.Mesh(sphereGeometry, mats[Math.floor(Math.random() * mats.length)])
-    sphere.position.x = pos.x * gap;
-    sphere.position.y = 0.7;
-    sphere.position.z = pos.y * gap;
-    stage.add(sphere)
+    const item = new THREE.Mesh(
+        testGeometries[Math.floor(Math.random() * testGeometries.length)], 
+        mats[Math.floor(Math.random() * mats.length)]
+    )
+    item.position.x = pos.x * gap;
+    item.position.y = 0.7;
+    item.position.z = pos.y * gap;
+
+    item.rotation.x = (Math.random() - 0.5) * Math.PI * 2
+    // item.rotation.z = (Math.random() - 0.5) * Math.PI * 2
+
+    testItems.push(item)
+    stage.add(item)
 }
 
 const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
@@ -111,6 +128,12 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     stats.begin()
+
+    testItems.forEach(item => 
+    {
+        item.rotation.z += 0.005
+    })
+
     const elapsedTime = clock.getElapsedTime()
 
     stage.render(elapsedTime)
