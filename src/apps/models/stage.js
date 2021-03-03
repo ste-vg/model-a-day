@@ -26,7 +26,7 @@ class Stage
          */
         
         this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.camera.position.set(1, 4, -4)
+        this.camera.position.set(3, 2, -3)
         this.scene.add(this.camera)
 
         // Controls

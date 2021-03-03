@@ -5,17 +5,17 @@ import Stats from 'stats.js'
 import { Stage } from "./stage";
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { defineGrid } from 'honeycomb-grid'
-
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import models from '../../_data/models.json';
 
 
 console.log({models})
 
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 const stats = new Stats()
 stats.showPanel(0)
-document.body.appendChild(stats.dom)
+// document.body.appendChild(stats.dom)
 
 /**
  * Stage
@@ -30,7 +30,10 @@ stage.controls.target = new THREE.Vector3(0, .5, 0)
  */
 
 const textureLoader = new THREE.TextureLoader()
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/workers/draco/')
 const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
 
 /**
  * Materials
@@ -52,7 +55,6 @@ const updateAllMaterials = (scene) =>
     {
         if(child instanceof THREE.Mesh)
         {
-            console.log({child})
             const type = child.name.split('_')[0]
             if(materials[type]) child.material = materials[type];
             else console.error(`This mesh name was missing the material type`, child.name)
