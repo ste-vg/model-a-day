@@ -1,5 +1,10 @@
 [
     {
+        "file": "tank.glb",
+        "name": "Tank",
+        "date": "2021-03-04"
+    },
+    {
         "file": "speaker.glb",
         "name": "Speaker",
         "date": "2021-03-03"
