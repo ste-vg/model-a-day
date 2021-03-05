@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
-import { backgroundGradient } from "./backgroundGradient";
+import { BackgroundGradient } from "./backgroundGradient";
 
 class Stage
 {
@@ -19,7 +19,7 @@ class Stage
          * Background Gradient
          */
 
-        this.scene.add(backgroundGradient(bottomColor, topColor))
+        this.scene.add(BackgroundGradient(bottomColor, topColor))
 
         /**
          * Camera

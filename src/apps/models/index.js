@@ -7,7 +7,8 @@ import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtil
 import { defineGrid } from 'honeycomb-grid'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import models from '../../_data/models.json';
-
+import { Loader } from "./loader";
+import { gsap } from "gsap"
 
 console.log({models})
 
@@ -28,6 +29,11 @@ stage.controls.target = new THREE.Vector3(0, .5, 0)
 /**
  * Loaders
  */
+
+const loaderScreen = new Loader('#73BADA', '#58A4D3');
+stage.add(loaderScreen.mesh);
+
+gsap.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 1.5, delay: 2, ease: 'power3.inOut'});
 
 const textureLoader = new THREE.TextureLoader()
 const dracoLoader = new DRACOLoader()

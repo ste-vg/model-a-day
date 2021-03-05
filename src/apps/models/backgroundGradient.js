@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-const backgroundGradient = (colorA, colorB) => {
+const BackgroundGradient = (colorA, colorB) => {
     var mesh = new THREE.Mesh(
         new THREE.PlaneBufferGeometry(2,2,1,1),
         new THREE.ShaderMaterial({
@@ -36,4 +36,4 @@ const backgroundGradient = (colorA, colorB) => {
     return mesh
 }
 
-export { backgroundGradient }
+export { BackgroundGradient }
