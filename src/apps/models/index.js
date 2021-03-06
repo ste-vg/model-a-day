@@ -10,7 +10,10 @@ import models from '../../_data/models.json';
 import { Loader } from "./loader";
 import { gsap } from "gsap"
 
+
 console.log({models})
+
+let text = null;
 
 // Debug
 // const gui = new dat.GUI()
@@ -33,24 +36,48 @@ stage.controls.target = new THREE.Vector3(0, .5, 0)
 const loaderScreen = new Loader('#73BADA', '#58A4D3');
 stage.add(loaderScreen.mesh);
 
-gsap.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 1.5, delay: 2, ease: 'power3.inOut'});
 
-const textureLoader = new THREE.TextureLoader()
+
+const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =>
+    {
+        gsap.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 2.5, delay: 0, ease: 'power4.inOut'});
+    },
+
+    // Progress
+    (itemUrl, itemsLoaded, itemsTotal) =>
+    {
+        // console.log('progress', itemUrl, itemsLoaded, itemsTotal)
+    }
+)
+
+const textureLoader = new THREE.TextureLoader(loadingManager)
+const fontLoader = new THREE.FontLoader(loadingManager)
 const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('/workers/draco/')
-const gltfLoader = new GLTFLoader()
-gltfLoader.setDRACOLoader(dracoLoader)
+      dracoLoader.setDecoderPath('/workers/draco/')
+
+const gltfLoader = new GLTFLoader(loadingManager)
+      gltfLoader.setDRACOLoader(dracoLoader)
+
+      
 
 /**
  * Materials
  */
 
+const textureLight = textureLoader.load('/textures/matcap-light-512.png')
+const textureDark = textureLoader.load('/textures/matcap-dark-512.png')
+const textureBase = textureLoader.load('/textures/matcap-base-512.png')
+const textureAccent = textureLoader.load('/textures/matcap-accent-512.png')
+const textureMetal = textureLoader.load('/textures/matcap-metal-512.png')
+
 const materials = {
-    light: new THREE.MeshMatcapMaterial({ matcap: textureLoader.load('/textures/matcap-light-512.png') }),
-    dark: new THREE.MeshMatcapMaterial({ matcap: textureLoader.load('/textures/matcap-dark-512.png') }),
-    base: new THREE.MeshMatcapMaterial({ matcap: textureLoader.load('/textures/matcap-base-512.png') }),
-    accent: new THREE.MeshMatcapMaterial({ matcap: textureLoader.load('/textures/matcap-accent-512.png') }),
-    metal: new THREE.MeshMatcapMaterial({ matcap: textureLoader.load('/textures/matcap-metal-512.png') }),
+    light: new THREE.MeshMatcapMaterial({ matcap: textureLight }),
+    dark: new THREE.MeshMatcapMaterial({ matcap: textureDark }),
+    base: new THREE.MeshMatcapMaterial({ matcap: textureBase }),
+    accent: new THREE.MeshMatcapMaterial({ matcap: textureAccent }),
+    metal: new THREE.MeshMatcapMaterial({ matcap: textureMetal }),
 }
 
 const mats = Object.keys(materials).map(key => materials[key]);
@@ -141,11 +168,8 @@ const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
 const mesh = new THREE.Mesh(mergedGeometry, materials.light)
 stage.add(mesh)
 
-
-
-
 /**
- * Tests
+ * Models
  */
 
 models.forEach(model => 
@@ -157,12 +181,65 @@ models.forEach(model =>
             gltf.scene.position.x = model.position.x
             gltf.scene.position.z = model.position.y
             stage.add(gltf.scene)
+
+            model.scene = gltf.scene
             
             // Update materials
             updateAllMaterials(gltf.scene)
         }
     )        
 })
+
+/**
+ * Intro
+ */
+
+fontLoader.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font) =>
+    {
+
+        const textMaterial = new THREE.MeshMatcapMaterial({ matcap: textureAccent })
+
+        // textMaterial.onBeforeCompile = (shader) =>
+        // {
+        //     shader.vertexShader = shader.vertexShader.replace(
+        //         '#include <project_vertex>',
+        //         `
+        //             vec4 mvPosition = vec4( transformed, 1.0 );
+        //             gl_Position = mvPosition;
+        //         `
+        //     )
+        // }
+
+        // Text
+        const textGeometry = new THREE.TextBufferGeometry(
+            'Test',
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 5
+            }
+        )
+        textGeometry.center()
+
+        text = new THREE.Mesh(textGeometry, textMaterial)
+        // text.material.depthWrite = false
+        // text.renderOrder = 999
+        text.position.set(1, 1.5, -1)
+        text.lookAt(4, 2, -4)
+        // stage.add(text)
+
+        
+    }
+)
+
 /**
  * Tick
  */
@@ -173,10 +250,9 @@ const tick = () =>
 {
     stats.begin()
 
-    testItems.forEach(item => 
-    {
-        item.rotation.z += 0.005
-    })
+
+    // if(text) text.rotation.z += 0.005
+
 
     const elapsedTime = clock.getElapsedTime()
 

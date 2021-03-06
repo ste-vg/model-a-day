@@ -26,7 +26,7 @@ class Stage
          */
         
         this.camera = new THREE.PerspectiveCamera(30, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.camera.position.set(3, 2, -3)
+        this.camera.position.set(4, 2, -4)
         this.scene.add(this.camera)
 
         // Controls
@@ -38,7 +38,7 @@ class Stage
          */
         const renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
-            antialias: true
+            antialias: window.devicePixelRatio === 1 ? true : false
         })
 
         renderer.physicallyCorrectLights = true
