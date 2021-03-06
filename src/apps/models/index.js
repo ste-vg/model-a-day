@@ -42,7 +42,9 @@ const loadingManager = new THREE.LoadingManager(
     // Loaded
     () =>
     {
-        gsap.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 2.5, delay: 0, ease: 'power4.inOut'});
+        const tl = gsap.timeline();
+        tl.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 2.5, delay: 0, ease: 'power4.inOut'})
+        tl.from(stage.camera.position, {x:5, y:50, z:-50, duration: 4, ease: 'power4.out'}, 0)
     },
 
     // Progress
