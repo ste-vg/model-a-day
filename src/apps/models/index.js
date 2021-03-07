@@ -201,7 +201,7 @@ fontLoader.load(
     (font) =>
     {
 
-        const textMaterial = new THREE.MeshMatcapMaterial({ matcap: textureAccent })
+        // const textMaterial = new THREE.MeshMatcapMaterial({ matcap: textureAccent })
 
         // textMaterial.onBeforeCompile = (shader) =>
         // {
@@ -216,31 +216,45 @@ fontLoader.load(
 
         // Text
         const textGeometry = new THREE.TextBufferGeometry(
-            'Test',
+            'Model a day',
             {
                 font: font,
                 size: 0.5,
-                height: 0.2,
+                height: 0.1,
                 curveSegments: 12,
                 bevelEnabled: true,
-                bevelThickness: 0.03,
-                bevelSize: 0.02,
+                bevelThickness: 0.02,
+                bevelSize: 0.01,
                 bevelOffset: 0,
                 bevelSegments: 5
             }
         )
         textGeometry.center()
 
-        text = new THREE.Mesh(textGeometry, textMaterial)
+        text = new THREE.Mesh(textGeometry, materials.metal)
+        text.position.z = -1;
+        text.scale.set(0.2, 0.2, .2)
+        stage.cameraAdd(text)
+
         // text.material.depthWrite = false
         // text.renderOrder = 999
-        text.position.set(1, 1.5, -1)
-        text.lookAt(4, 2, -4)
+        // text.position.set(1, 1.5, -1)
+        // text.lookAt(4, 2, -4)
         // stage.add(text)
 
         
     }
 )
+
+
+
+// const testGeometry = new THREE.DodecahedronGeometry(0.2);
+// const testMesh = new THREE.Mesh(testGeometry, materials.accent)
+// testMesh.position.z = -2;
+
+// stage.cameraAdd(testMesh)
+
+
 
 /**
  * Tick
@@ -253,7 +267,10 @@ const tick = () =>
     stats.begin()
 
 
-    // if(text) text.rotation.z += 0.005
+    if(text) text.rotation.x -= 0.01
+    if(text) text.rotation.z += 0.02
+
+    
 
 
     const elapsedTime = clock.getElapsedTime()

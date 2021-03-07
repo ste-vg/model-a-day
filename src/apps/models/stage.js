@@ -34,6 +34,14 @@ class Stage
         this.controls.enableDamping = true
 
         /**
+         * Camera Group
+         */
+        
+        this.cameraGroup = new THREE.Group();
+        this.cameraGroup.renderOrder = 999999999
+        this.scene.add(this.cameraGroup);
+
+        /**
          * Renderer
          */
         const renderer = new THREE.WebGLRenderer({
@@ -74,9 +82,16 @@ class Stage
         this.scene.add(item)
     }
 
+    cameraAdd(item)
+    {
+        this.cameraGroup.add(item)
+    }
+
     render(elapsedTime)
     {
         this.controls.update()
+        this.cameraGroup.position.copy(this.camera.position)
+        this.cameraGroup.rotation.copy(this.camera.rotation)
         this.renderer.render(this.scene, this.camera)
     }
 }
