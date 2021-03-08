@@ -38,7 +38,7 @@ class Stage
          */
         
         this.cameraGroup = new THREE.Group();
-        this.cameraGroup.renderOrder = 999999999
+ 
         this.scene.add(this.cameraGroup);
 
         /**
@@ -53,6 +53,7 @@ class Stage
         renderer.outputEncoding = THREE.sRGBEncoding
         renderer.toneMapping = THREE.ACESFilmicToneMapping
         renderer.toneMappingExposure = 1
+        // renderer.sortObjects = false
 
         this.renderer = renderer
 

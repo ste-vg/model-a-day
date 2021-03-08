@@ -1,5 +1,10 @@
 [
     {
+        "file": "tree.glb",
+        "name": "Tree",
+        "date": "2021-03-08"
+    },
+    {
         "file": "tank.glb",
         "name": "Tank",
         "date": "2021-03-04"

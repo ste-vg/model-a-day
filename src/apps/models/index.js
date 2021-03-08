@@ -73,6 +73,7 @@ const textureDark = textureLoader.load('/textures/matcap-dark-512.png')
 const textureBase = textureLoader.load('/textures/matcap-base-512.png')
 const textureAccent = textureLoader.load('/textures/matcap-accent-512.png')
 const textureMetal = textureLoader.load('/textures/matcap-metal-512.png')
+const textureAlt = textureLoader.load('/textures/matcap-alt-512.png')
 
 const materials = {
     light: new THREE.MeshMatcapMaterial({ matcap: textureLight }),
@@ -80,6 +81,7 @@ const materials = {
     base: new THREE.MeshMatcapMaterial({ matcap: textureBase }),
     accent: new THREE.MeshMatcapMaterial({ matcap: textureAccent }),
     metal: new THREE.MeshMatcapMaterial({ matcap: textureMetal }),
+    alt: new THREE.MeshMatcapMaterial({ matcap: textureAlt }),
 }
 
 const mats = Object.keys(materials).map(key => materials[key]);
@@ -197,7 +199,7 @@ models.forEach(model =>
  */
 
 fontLoader.load(
-    '/fonts/helvetiker_regular.typeface.json',
+    '/fonts/Flavors_Regular.json',
     (font) =>
     {
 
@@ -231,16 +233,19 @@ fontLoader.load(
         )
         textGeometry.center()
 
-        text = new THREE.Mesh(textGeometry, materials.metal)
+        text = new THREE.Mesh(textGeometry, materials.accent)
         text.position.z = -1;
-        text.scale.set(0.2, 0.2, .2)
-        stage.cameraAdd(text)
-
+        text.scale.set(0.1, 0.1, 0.1)
+        
         // text.material.depthWrite = false
-        // text.renderOrder = 999
-        // text.position.set(1, 1.5, -1)
-        // text.lookAt(4, 2, -4)
-        // stage.add(text)
+        // text.material.depthTest = false
+        
+        // text.renderOrder = 999999
+        // text.onBeforeRender = (renderer) => { renderer.clearDepth(); };
+        
+        // stage.cameraAdd(text)
+        
+    
 
         
     }
@@ -267,8 +272,8 @@ const tick = () =>
     stats.begin()
 
 
-    if(text) text.rotation.x -= 0.01
-    if(text) text.rotation.z += 0.02
+    // if(text) text.rotation.x -= 0.01
+    // if(text) text.rotation.z += 0.02
 
     
 
