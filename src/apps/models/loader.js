@@ -6,7 +6,7 @@ class Loader
     constructor (color = 'black', shadow = "white", size = 1)
     {
         this.mesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(2,2,1,1),
+            new THREE.PlaneBufferGeometry(3,3,1,1),
             new THREE.ShaderMaterial({
             uniforms: {
                 uColor: { value: new THREE.Color(color) },
@@ -19,7 +19,7 @@ class Loader
   
                 void main(){
                     vUv = uv;
-                    gl_Position = vec4(position.xy, 0, 1.);
+                    gl_Position = vec4(position.xy * 0.7, 0.5, 1.);
                 }
             `,
             fragmentShader: fragShader,

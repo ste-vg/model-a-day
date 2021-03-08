@@ -43,8 +43,21 @@ const loadingManager = new THREE.LoadingManager(
     () =>
     {
         const tl = gsap.timeline();
-        tl.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 2.5, delay: 0, ease: 'power4.inOut'})
-        tl.from(stage.camera.position, {x:5, y:50, z:-50, duration: 4, ease: 'power4.out'}, 0)
+
+        tl.set(letterGroup.position, {z: -0.3, x: -0.02})
+        introTextPositions.forEach((item, i) => {
+            tl.from(item.mesh.position, {z: -0.3, duration: 2, delay: i * 0.05, ease: 'elastic.out'},0)
+            tl.from(item.mesh.rotation, {x: (Math.random() - 0.5) * 10, z: (Math.random() - 0.5) * 10, duration: 2, delay: i * 0.05, ease: 'elastic.out'},0)
+            
+            tl.to(item.mesh.position, {z: 0.5, y: -0.5, duration: 1.2,  delay: (introTextPositions.length - i) * 0.05, ease: 'power3.in'},3)
+            tl.to(item.mesh.rotation, {x: (Math.random() - 0.5) * 40, z: (Math.random() - 0.5) * 20,  delay: (introTextPositions.length - i) * 0.03, duration: 1.2, ease: 'power3.in'},3)
+            
+        })
+        // tl.to(letterGroup.scale, {x: 6, y: 6, z: 6, duration: 1.5,  ease: 'power4.in'}, 3)
+        // tl.to(letterGroup.position, {x: -0.12, y: 0.08, duration: 1.5,  ease: 'power4.in'}, 3)
+
+        tl.to(loaderScreen, {progress: 1, noiseSize: 3, duration: 2.5, ease: 'power4.inOut'}, 3.5)
+        tl.from(stage.camera.position, {x:5, y:50, z:-50, duration: 4, ease: 'power4.out'}, 3.5)
     },
 
     // Progress
@@ -198,54 +211,67 @@ models.forEach(model =>
  * Intro
  */
 
+const letterGroup = new THREE.Group();
+const introTextPositions = [
+    { letter: 'M', x: 0, y: 0 },
+    { letter: 'o', x: 0.015, y: 0 },
+    { letter: 'd', x: 0.027, y: 0 },
+    { letter: 'e', x: 0.0375, y: 0 },
+    { letter: 'l', x: 0.045, y: 0 },
+    { letter: 'a', x: 0, y: -0.02 },
+    { letter: 'd', x: 0.019, y: -0.02 },
+    { letter: 'a', x: 0.03, y: -0.02 },
+    { letter: 'y', x: 0.041, y: -0.02 },
+]
+
 fontLoader.load(
     '/fonts/Flavors_Regular.json',
     (font) =>
     {
+        const textSettings = {
+            font: font,
+            size: 0.5,
+            height: 0.1,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.02,
+            bevelSize: 0.01,
+            bevelOffset: 0,
+            bevelSegments: 5
+        }
 
-        // const textMaterial = new THREE.MeshMatcapMaterial({ matcap: textureAccent })
+        const letterScale = 0.03
 
-        // textMaterial.onBeforeCompile = (shader) =>
-        // {
-        //     shader.vertexShader = shader.vertexShader.replace(
-        //         '#include <project_vertex>',
-        //         `
-        //             vec4 mvPosition = vec4( transformed, 1.0 );
-        //             gl_Position = mvPosition;
-        //         `
-        //     )
-        // }
+        const letterGeometries = {}
+        'Modelay'.split('').forEach(letter => {
+            const textGeometry = new THREE.TextBufferGeometry(letter, textSettings)
+            textGeometry.center()
+            letterGeometries[letter] = textGeometry
+        })
+
+        
+        letterGroup.position.x = -0.015
+        letterGroup.position.y = 0.01
 
         // Text
-        const textGeometry = new THREE.TextBufferGeometry(
-            'Model a day',
-            {
-                font: font,
-                size: 0.5,
-                height: 0.1,
-                curveSegments: 12,
-                bevelEnabled: true,
-                bevelThickness: 0.02,
-                bevelSize: 0.01,
-                bevelOffset: 0,
-                bevelSegments: 5
-            }
-        )
-        textGeometry.center()
 
-        text = new THREE.Mesh(textGeometry, materials.accent)
-        text.position.z = -1;
-        text.scale.set(0.1, 0.1, 0.1)
         
-        // text.material.depthWrite = false
-        // text.material.depthTest = false
+
+        introTextPositions.forEach((position, i) => {
+            
+            const text = new THREE.Mesh(letterGeometries[position.letter], materials.accent)
+            text.position.x = position.x;
+            text.position.y = position.y;
+           
+            text.scale.set(letterScale, letterScale, letterScale)
+
+            position.mesh = text
+
+            letterGroup.add(text)
+        })
         
-        // text.renderOrder = 999999
-        // text.onBeforeRender = (renderer) => { renderer.clearDepth(); };
+        stage.cameraAdd(letterGroup)
         
-        // stage.cameraAdd(text)
-        
-    
 
         
     }
